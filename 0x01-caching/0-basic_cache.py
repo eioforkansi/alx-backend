@@ -20,8 +20,9 @@ class BasicCache(BaseCaching):
         """
         Assign value to a key in the dictionary.
         """
-        if key is not None or item is not None:
-            self.cache_data[key] = item
+        if key is None or item is None:
+            return
+        self.cache_data[key] = item
 
     def get(self, key):
         """
