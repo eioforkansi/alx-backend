@@ -2,9 +2,8 @@
 """
 Module that provides LRUCache class.
 """
-
-BaseCaching = __import__('base_caching').BaseCaching
 from collections import OrderedDict
+BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LRUCache(BaseCaching):
@@ -45,7 +44,6 @@ class LRUCache(BaseCaching):
         """
         if key is None or key not in self.cache_data:
             return None
-        
         item = self.cache_data.pop(key)
         self.cache_data[key] = item
         return item
