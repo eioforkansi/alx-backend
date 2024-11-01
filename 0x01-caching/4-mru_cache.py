@@ -1,40 +1,40 @@
 #!/usr/bin/env python3
 """
-Module that provides LRUCache class.
+Module that provides MRUCache class.
 """
 from collections import OrderedDict
 BaseCaching = __import__('base_caching').BaseCaching
 
 
-class LRUCache(BaseCaching):
+class MRUCache(BaseCaching):
     """
-    LRU Caching system.
+    MRU Caching system.
     """
     def __init__(self):
         """
         Initialize parent class
         """
         super().__init__()
-        # Initialize a list to keep track of the order of keys for LRU
-        self.cache_data = OrderedDict()
+
+        # Initialize a list to keep track of the order of keys for MRU
+        self.access_order = []
 
     def put(self, key, item):
         """
         Assign item value to a key in the dictionary.
-        If the cache exceeds MAX_ITEMS, remove the least recently
-        used item (LRU).
+        If the cache exceeds MAX_ITEMS, remove the most recently
+        used item (MRU).
         """
         if key is None or item is None:
             return
 
-        if key in self.cache_data:
-            self.cache_data.pop(key)
         self.cache_data[key] = item
+        self.access_order.append(key)
 
         # Check if we need to discard the last item
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            discard, _ = self.cache_data.popitem(last=False)
-
+            discard = self.access_order.pop(-2)
+            del self.cache_data[discard]
             print(f"DISCARD: {discard}")
 
     def get(self, key):
@@ -44,6 +44,7 @@ class LRUCache(BaseCaching):
         """
         if key is None or key not in self.cache_data:
             return None
-        item = self.cache_data.pop(key)
-        self.cache_data[key] = item
-        return item
+
+        self.access_order.remove(key)
+        self.access_order.append(key)
+        return self.cache_data.get(key)
